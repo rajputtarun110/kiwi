@@ -11,6 +11,7 @@ interface HomeProps {
 const Home: React.FC<HomeProps> = ({ featuredProperties }) => {
   const [activeTab, setActiveTab] = useState<'buy' | 'rent' | 'sell'>('buy');
   const [searchTerm, setSearchTerm] = useState('');
+  const [visibleCount, setVisibleCount] = useState(4);
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -21,7 +22,14 @@ const Home: React.FC<HomeProps> = ({ featuredProperties }) => {
   };
 
   const localities = [
-    'Sector 18', 'Sector 62', 'Sector 150', 'Sector 137', 'Greater Noida West', 'Sector 75', 'Sector 44', 'Sector 128'
+    { name: 'Sector 150', count: '240+ Properties', price: '₹12k/sqft', image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
+    { name: 'Sector 62', count: '180+ Properties', price: '₹10k/sqft', image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
+    { name: 'Greater Noida W', count: '450+ Properties', price: '₹6k/sqft', image: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
+    { name: 'Sector 137', count: '120+ Properties', price: '₹8.5k/sqft', image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
+    { name: 'Sector 128', count: '95+ Properties', price: '₹15k/sqft', image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
+    { name: 'Sector 44', count: '50+ Properties', price: '₹18k/sqft', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
+    { name: 'Sector 75', count: '310+ Properties', price: '₹7.5k/sqft', image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
+    { name: 'Sector 18', count: '85+ Properties', price: '₹22k/sqft', image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' }
   ];
 
   const sellers = [
@@ -176,16 +184,46 @@ const Home: React.FC<HomeProps> = ({ featuredProperties }) => {
       </div>
 
       {/* Popular Localities */}
-      <div className="max-w-7xl mx-auto px-4 mt-16 mb-8">
-        <div className="flex items-center gap-2 mb-4 text-gray-800">
-          <TrendingUp size={20} className="text-brand-green" />
-          <h2 className="font-bold text-lg">Popular Localities</h2>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 mb-8">
+        <div className="flex justify-between items-end mb-8">
+          <div className="flex items-center gap-2">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <TrendingUp size={24} className="text-brand-green" />
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Popular Localities</h2>
+              </div>
+              <p className="text-gray-500">Explore top rated neighborhoods in Noida</p>
+            </div>
+          </div>
+          <Link to="/buy" className="hidden sm:flex items-center gap-2 text-brand-green font-bold hover:gap-3 transition-all">
+            See All <ArrowRight size={20} />
+          </Link>
         </div>
-        <div className="flex flex-wrap gap-3">
-          {localities.map(loc => (
-            <button key={loc} className="flex-grow md:flex-grow-0 px-5 py-3 bg-white border border-gray-200 rounded-xl text-gray-600 hover:border-brand-green hover:text-brand-green hover:shadow-md transition-all flex items-center justify-center gap-2">
-              {loc} <ChevronRight size={14} className="opacity-50" />
-            </button>
+
+        <div className="flex overflow-x-auto pb-6 gap-5 snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0">
+          {localities.map((loc) => (
+            <div key={loc.name} className="min-w-[200px] sm:min-w-[240px] md:min-w-[260px] flex-shrink-0 snap-start group bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col cursor-pointer">
+              <div className="relative h-32 md:h-40 overflow-hidden">
+                <img 
+                  src={loc.image} 
+                  alt={loc.name} 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div className="absolute bottom-3 left-3 right-3 text-white">
+                  <h3 className="font-bold text-lg leading-tight">{loc.name}</h3>
+                </div>
+              </div>
+              <div className="p-4 flex flex-col justify-between flex-grow">
+                 <div>
+                    <div className="flex justify-between items-center text-xs font-medium text-gray-500 mb-2">
+                      <span className="bg-brand-lightGreen text-brand-green px-2 py-0.5 rounded">Trending</span>
+                      <span>{loc.price}</span>
+                    </div>
+                    <p className="text-sm text-gray-600 font-medium">{loc.count}</p>
+                 </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -202,11 +240,22 @@ const Home: React.FC<HomeProps> = ({ featuredProperties }) => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-          {featuredProperties.map((prop) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {featuredProperties.slice(0, visibleCount).map((prop) => (
             <PropertyCard key={prop.id} property={prop} />
           ))}
         </div>
+        
+        {visibleCount < featuredProperties.length && (
+            <div className="flex justify-center mt-8">
+                <button 
+                  onClick={() => setVisibleCount(prev => prev + 4)}
+                  className="px-8 py-3 bg-white border border-gray-200 rounded-xl font-bold text-gray-700 hover:bg-gray-50 hover:border-brand-green hover:text-brand-green transition-all shadow-sm hover:shadow-md flex items-center gap-2"
+                >
+                  Show More Properties <ChevronRight size={18} />
+                </button>
+            </div>
+        )}
       </div>
 
       {/* Recommended Sellers (Replaces View All Properties Button) */}

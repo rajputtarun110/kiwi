@@ -95,6 +95,96 @@ const INITIAL_PROPERTIES: Property[] = [
     amenities: ['Park', 'Security', 'Water Connection'],
     ownerContact: '+91 98765 43214',
     datePosted: '2023-10-28',
+  },
+  {
+    id: '6',
+    title: 'Luxury Penthouse with Terrace',
+    description: 'Stunning penthouse offering breathtaking city views, private terrace garden, and exclusive elevator access.',
+    price: 35000000,
+    location: 'Sector 44',
+    city: 'Noida',
+    type: 'Apartment',
+    listingType: 'sale',
+    bedrooms: 4,
+    bathrooms: 4,
+    area: 4200,
+    imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    amenities: ['Private Terrace', 'Jacuzzi', 'Concierge'],
+    ownerContact: '+91 98765 43215',
+    datePosted: '2023-10-30',
+    isFeatured: true
+  },
+  {
+    id: '7',
+    title: 'Elegant Studio Apartment',
+    description: 'Fully furnished studio apartment suitable for corporates. High-speed internet and housekeeping included.',
+    price: 28000,
+    location: 'Sector 128',
+    city: 'Noida',
+    type: 'Studio',
+    listingType: 'rent',
+    bedrooms: 1,
+    bathrooms: 1,
+    area: 600,
+    imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    amenities: ['WiFi', 'Housekeeping', 'Gym'],
+    ownerContact: '+91 98765 43216',
+    datePosted: '2023-11-01',
+    isFeatured: true
+  },
+  {
+    id: '8',
+    title: 'Corner Villa in Green Belt',
+    description: 'Peaceful living in this corner villa facing the green belt. Ample parking space and servant quarter.',
+    price: 52000000,
+    location: 'Sector 150',
+    city: 'Noida',
+    type: 'Villa',
+    listingType: 'sale',
+    bedrooms: 5,
+    bathrooms: 6,
+    area: 4500,
+    imageUrl: 'https://images.unsplash.com/photo-1600596542815-3ad19eb6a269?ixlib=rb-4.0.3&auto=format&fit=crop&w=1475&q=80',
+    amenities: ['Green Belt Facing', 'Servant Quarter', 'Club Membership'],
+    ownerContact: '+91 98765 43217',
+    datePosted: '2023-11-05',
+    isFeatured: true
+  },
+  {
+    id: '9',
+    title: 'High Street Retail Shop',
+    description: 'Prime location retail shop on the ground floor. High footfall area, perfect for premium brands.',
+    price: 22000000,
+    location: 'Sector 18',
+    city: 'Noida',
+    type: 'Commercial',
+    listingType: 'sale',
+    bedrooms: 0,
+    bathrooms: 0,
+    area: 800,
+    imageUrl: 'https://images.unsplash.com/photo-1556740758-90de374c12ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    amenities: ['Glass Front', 'High Visibility', 'Parking'],
+    ownerContact: '+91 98765 43218',
+    datePosted: '2023-11-10',
+    isFeatured: true
+  },
+  {
+    id: '10',
+    title: 'Furnished 3BHK for Rent',
+    description: 'Beautifully furnished apartment with modular kitchen and wardrobes. Ready to move in.',
+    price: 45000,
+    location: 'Sector 75',
+    city: 'Noida',
+    type: 'Apartment',
+    listingType: 'rent',
+    bedrooms: 3,
+    bathrooms: 3,
+    area: 1600,
+    imageUrl: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    amenities: ['Modular Kitchen', 'Wardrobes', 'Power Backup'],
+    ownerContact: '+91 98765 43219',
+    datePosted: '2023-11-12',
+    isFeatured: true
   }
 ];
 
@@ -105,7 +195,8 @@ function App() {
     setProperties(prev => [newProperty, ...prev]);
   };
 
-  const featuredProperties = properties.filter(p => p.isFeatured || p.price > 10000000).slice(0, 3);
+  // Pass all featured properties to Home, let Home handle pagination
+  const featuredProperties = properties.filter(p => p.isFeatured || p.price > 10000000);
 
   return (
     <Router>
