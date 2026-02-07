@@ -173,11 +173,12 @@ const Home: React.FC<HomeProps> = ({ featuredProperties }) => {
                 >
                   Post Property <span className="font-extrabold uppercase">FREE</span>
                 </Link>
-                <button 
+                <Link 
+                  to="/find-agent"
                   className="bg-white/10 backdrop-blur-md text-white text-lg font-bold px-10 py-4 rounded-xl shadow-lg border border-white/30 hover:bg-white/20 transition-all hover:scale-105 transform duration-200 flex items-center justify-center gap-2"
                 >
-                  <UserCheck size={22} /> Contact Nearby Agent
-                </button>
+                  <UserCheck size={22} /> Find An Agent
+                </Link>
               </div>
             </div>
          </div>

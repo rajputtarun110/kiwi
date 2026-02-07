@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import AdminLayout from './components/AdminLayout';
 import Home from './pages/Home';
 import Listings from './pages/Listings';
 import PostProperty from './pages/PostProperty';
 import PropertyDetails from './pages/PropertyDetails';
-import { Property } from './types';
+import FindAgent from './pages/FindAgent';
+import Settings from './pages/Settings';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import PropertyManagement from './pages/admin/PropertyManagement';
+import UserManagement from './pages/admin/UserManagement';
+import AdminPeople from './pages/admin/AdminPeople'; 
+import { Property, User } from './types';
 
-// Initial Mock Data
+// Initial Mock Data (Acting as Database Seed)
 const INITIAL_PROPERTIES: Property[] = [
   {
     id: '1',
@@ -20,12 +27,41 @@ const INITIAL_PROPERTIES: Property[] = [
     listingType: 'sale',
     bedrooms: 4,
     bathrooms: 5,
+    balconies: 3,
     area: 3200,
+    superBuiltUpArea: 3200,
+    builtUpArea: 2800,
+    carpetArea: 2400,
     imageUrl: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&auto=format&fit=crop&w=1771&q=80',
-    amenities: ['Pool', 'Garden', 'Smart Home', '24x7 Security'],
+    amenities: ['Swimming Pool', 'Club House', 'Smart Home', 'Security Personnel', 'Parking'],
     ownerContact: '+91 98765 43210',
     datePosted: '2023-10-15',
-    isFeatured: true
+    isFeatured: true,
+    constructionStatus: 'Ready to Move',
+    furnishedStatus: 'Fully Furnished',
+    listedBy: 'Agent',
+    ownershipType: 'Freehold',
+    facing: 'North-East',
+    exitFacing: 'South-West',
+    parkingSpaces: 2,
+    floor: 0,
+    totalFloors: 2,
+    reraApproved: true,
+    hasShowcase: true,
+    has3DVideo: true,
+    parkingType: 'Covered',
+    views: ['Park', 'Corner'],
+    yearBuilt: 2021,
+    additionalRooms: ['Servant Room', 'Study Room', 'Pooja Room'],
+    allInclusivePrice: true,
+    brokerageType: 'Fixed',
+    brokerageAmount: 100000,
+    documents: ['Sale Deed', 'Completion Certificate (CC)', 'Occupancy Certificate (OC)', 'Property Tax Receipts'],
+    isVerified: true,
+    status: 'Approved',
+    pageViews: 1250,
+    leads: 12,
+    ownerId: 'u2'
   },
   {
     id: '2',
@@ -38,63 +74,34 @@ const INITIAL_PROPERTIES: Property[] = [
     listingType: 'rent',
     bedrooms: 2,
     bathrooms: 2,
+    balconies: 2,
     area: 1100,
+    superBuiltUpArea: 1100,
+    builtUpArea: 950,
+    carpetArea: 850,
     imageUrl: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1680&q=80',
-    amenities: ['Gym', 'Parking', 'Clubhouse'],
+    amenities: ['Gym', 'Parking', 'Club House', 'Lift', 'Power Backup'],
     ownerContact: '+91 98765 43211',
     datePosted: '2023-10-20',
-    isFeatured: true
-  },
-  {
-    id: '3',
-    title: 'Spacious 3BHK High Rise',
-    description: 'Enjoy panoramic views of the city from this 25th floor apartment. Premium fittings and access to all society amenities.',
-    price: 12500000,
-    location: 'Sector 137',
-    city: 'Noida',
-    type: 'Apartment',
-    listingType: 'sale',
-    bedrooms: 3,
-    bathrooms: 3,
-    area: 1850,
-    imageUrl: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80',
-    amenities: ['Gym', 'Pool', 'Tennis Court', 'Power Backup'],
-    ownerContact: '+91 98765 43212',
-    datePosted: '2023-10-22',
-  },
-  {
-    id: '4',
-    title: 'Commercial Office Space',
-    description: 'Plug and play office space suitable for startups. Includes conference rooms and cafeteria.',
-    price: 85000,
-    location: 'Sector 62',
-    city: 'Noida',
-    type: 'Commercial',
-    listingType: 'rent',
-    bedrooms: 0,
-    bathrooms: 2,
-    area: 2500,
-    imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1769&q=80',
-    amenities: ['Cafeteria', 'Conference Room', 'Central AC'],
-    ownerContact: '+91 98765 43213',
-    datePosted: '2023-10-25',
-  },
-  {
-    id: '5',
-    title: 'Premium Plot in Gated Community',
-    description: 'Build your dream home on this corner plot located in a lush green gated community.',
-    price: 6500000,
-    location: 'Greater Noida West',
-    city: 'Noida',
-    type: 'Plot',
-    listingType: 'sale',
-    bedrooms: 0,
-    bathrooms: 0,
-    area: 1500,
-    imageUrl: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1932&q=80',
-    amenities: ['Park', 'Security', 'Water Connection'],
-    ownerContact: '+91 98765 43214',
-    datePosted: '2023-10-28',
+    isFeatured: true,
+    constructionStatus: 'Ready to Move',
+    furnishedStatus: 'Semi-Furnished',
+    listedBy: 'Owner',
+    facing: 'East',
+    exitFacing: 'West',
+    parkingSpaces: 1,
+    floor: 12,
+    totalFloors: 20,
+    parkingType: 'Covered',
+    views: ['Road'],
+    yearBuilt: 2019,
+    additionalRooms: ['Store Room'],
+    brokerageType: 'None',
+    isVerified: false,
+    status: 'Pending',
+    pageViews: 450,
+    leads: 5,
+    ownerId: 'u3'
   },
   {
     id: '6',
@@ -103,159 +110,87 @@ const INITIAL_PROPERTIES: Property[] = [
     price: 35000000,
     location: 'Sector 44',
     city: 'Noida',
-    type: 'Apartment',
+    type: 'Penthouse',
     listingType: 'sale',
     bedrooms: 4,
     bathrooms: 4,
-    area: 4200,
-    imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
-    amenities: ['Private Terrace', 'Jacuzzi', 'Concierge'],
-    ownerContact: '+91 98765 43215',
-    datePosted: '2023-10-30',
-    isFeatured: true
-  },
-  {
-    id: '7',
-    title: 'Elegant Studio Apartment',
-    description: 'Fully furnished studio apartment suitable for corporates. High-speed internet and housekeeping included.',
-    price: 28000,
-    location: 'Sector 128',
-    city: 'Noida',
-    type: 'Studio',
-    listingType: 'rent',
-    bedrooms: 1,
-    bathrooms: 1,
-    area: 600,
-    imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
-    amenities: ['WiFi', 'Housekeeping', 'Gym'],
-    ownerContact: '+91 98765 43216',
-    datePosted: '2023-11-01',
-    isFeatured: true
-  },
-  {
-    id: '8',
-    title: 'Corner Villa in Green Belt',
-    description: 'Peaceful living in this corner villa facing the green belt. Ample parking space and servant quarter.',
-    price: 52000000,
-    location: 'Sector 150',
-    city: 'Noida',
-    type: 'Villa',
-    listingType: 'sale',
-    bedrooms: 5,
-    bathrooms: 6,
+    balconies: 3,
     area: 4500,
-    imageUrl: 'https://images.unsplash.com/photo-1600596542815-3ad19eb6a269?ixlib=rb-4.0.3&auto=format&fit=crop&w=1475&q=80',
-    amenities: ['Green Belt Facing', 'Servant Quarter', 'Club Membership'],
-    ownerContact: '+91 98765 43217',
-    datePosted: '2023-11-05',
-    isFeatured: true
-  },
-  {
-    id: '9',
-    title: 'High Street Retail Shop',
-    description: 'Prime location retail shop on the ground floor. High footfall area, perfect for premium brands.',
-    price: 22000000,
-    location: 'Sector 18',
-    city: 'Noida',
-    type: 'Commercial',
-    listingType: 'sale',
-    bedrooms: 0,
-    bathrooms: 0,
-    area: 800,
-    imageUrl: 'https://images.unsplash.com/photo-1556740758-90de374c12ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
-    amenities: ['Glass Front', 'High Visibility', 'Parking'],
-    ownerContact: '+91 98765 43218',
-    datePosted: '2023-11-10',
-    isFeatured: true
-  },
-  {
-    id: '10',
-    title: 'Furnished 3BHK for Rent',
-    description: 'Beautifully furnished apartment with modular kitchen and wardrobes. Ready to move in.',
-    price: 45000,
-    location: 'Sector 75',
-    city: 'Noida',
-    type: 'Apartment',
-    listingType: 'rent',
-    bedrooms: 3,
-    bathrooms: 3,
-    area: 1600,
-    imageUrl: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
-    amenities: ['Modular Kitchen', 'Wardrobes', 'Power Backup'],
-    ownerContact: '+91 98765 43219',
-    datePosted: '2023-11-12',
-    isFeatured: true
+    superBuiltUpArea: 4500,
+    imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    amenities: ['Private Terrace', 'Jacuzzi', 'Concierge', 'Gym', 'Swimming Pool'],
+    ownerContact: '+91 98765 43215',
+    datePosted: '2023-11-01',
+    isFeatured: true,
+    constructionStatus: 'Ready to Move',
+    furnishedStatus: 'Fully Furnished',
+    listedBy: 'Agent',
+    ownershipType: 'Freehold',
+    facing: 'North',
+    exitFacing: 'South',
+    parkingSpaces: 3,
+    floor: 18,
+    totalFloors: 18,
+    reraApproved: true,
+    views: ['City', 'Park'],
+    yearBuilt: 2020,
+    brokerageType: 'Percentage of Price',
+    brokerageAmount: 1,
+    documents: ['Sale Deed', 'Occupancy Certificate (OC)', 'Completion Certificate (CC)'],
+    isVerified: false,
+    status: 'Draft',
+    ownerId: 'u2'
   }
 ];
 
-function App() {
+const INITIAL_USERS: User[] = [
+    { id: 'admin', name: 'Super Admin', email: 'admin@kiwi.com', phone: '0000000000', role: 'Admin', joinDate: '2023-01-01', isVerified: true, status: 'Active' },
+    { id: 'u1', name: 'Vaibhav Arora', email: 'vaibhav@arora.com', phone: '9876543210', role: 'Broker', joinDate: '2023-01-15', isVerified: true, status: 'Active', propertiesListed: 24, companyName: 'Arora Estates', licenseNumber: 'RERA-123' },
+    { id: 'u2', name: 'John Doe', email: 'john@gmail.com', phone: '9876543211', role: 'Buyer', joinDate: '2023-05-10', isVerified: true, status: 'Active' },
+    { id: 'u3', name: 'Suresh Raina', email: 'suresh@builder.com', phone: '9876543212', role: 'Seller', joinDate: '2023-08-20', isVerified: false, status: 'Active', propertiesListed: 2 },
+];
+
+const App: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>(INITIAL_PROPERTIES);
+  const [users, setUsers] = useState<User[]>(INITIAL_USERS);
 
-  const addProperty = (newProperty: Property) => {
-    setProperties(prev => [newProperty, ...prev]);
+  const handleAddProperty = (newProperty: Property) => {
+    setProperties((prev) => [newProperty, ...prev]);
   };
-
-  // Pass all featured properties to Home, let Home handle pagination
-  const featuredProperties = properties.filter(p => p.isFeatured || p.price > 10000000);
 
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home featuredProperties={featuredProperties} />} />
-            <Route path="/buy" element={<Listings properties={properties} type="sale" />} />
-            <Route path="/rent" element={<Listings properties={properties} type="rent" />} />
-            <Route path="/sell" element={<PostProperty onAddProperty={addProperty} />} />
-            <Route path="/property/:id" element={<PropertyDetails properties={properties} />} />
-          </Routes>
-        </main>
-        <footer className="bg-brand-brown text-white py-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-5 gap-8">
-            <div className="md:col-span-2">
-              <h3 className="text-2xl font-bold mb-4">Kiwi Sqft</h3>
-              <p className="text-brand-lightGreen/80 text-sm leading-relaxed mb-2">
-                Kiwi Sqft is a complete property platform that brings buyers, sellers, and agents together at one trusted place. Buyers can explore the best property options and connect with the right agents based on their requirements. 
-              </p>
-              <p className="text-brand-lightGreen/80 text-sm leading-relaxed mb-2">
-                Sellers can list their property directly or choose a professional agent to help them sell faster and smarter.
-              </p>
-              <p className="text-brand-lightGreen/80 text-sm leading-relaxed">
-                Whether you are buying, selling, or listing as an agent, Kiwi Sqft makes the entire property journey simple, transparent, and efficient.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm text-gray-300">
-                <li><a href="#" className="hover:text-white">About Us</a></li>
-                <li><a href="#" className="hover:text-white">Careers</a></li>
-                <li><a href="#" className="hover:text-white">Terms & Conditions</a></li>
-                <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Services</h4>
-              <ul className="space-y-2 text-sm text-gray-300">
-                <li><a href="#/buy" className="hover:text-white">Buy Property</a></li>
-                <li><a href="#/sell" className="hover:text-white">Sell Property</a></li>
-                <li><a href="#/rent" className="hover:text-white">Rent Property</a></li>
-                <li><a href="#" className="hover:text-white">Property Valuation</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Contact</h4>
-              <p className="text-sm text-gray-300">123, Green Park, Sector 62, Noida - 201301</p>
-              <p className="text-sm text-gray-300 mt-2">support@kiwisqft.com</p>
-            </div>
-          </div>
-          <div className="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-white/10 text-center text-sm text-gray-400">
-            © 2024 Kiwi Sqft. All rights reserved.
-          </div>
-        </footer>
-      </div>
+      <Navbar />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Home featuredProperties={properties.filter(p => p.isFeatured && p.status === 'Approved')} />} />
+        <Route path="/buy" element={<Listings properties={properties.filter(p => p.status === 'Approved')} type="sale" />} />
+        <Route path="/rent" element={<Listings properties={properties.filter(p => p.status === 'Approved')} type="rent" />} />
+        
+        {/* User Post Property Route */}
+        <Route path="/sell" element={<PostProperty onAddProperty={handleAddProperty} isAdmin={false} />} />
+        
+        <Route path="/property/:id" element={<PropertyDetails properties={properties} />} />
+        <Route path="/find-agent" element={<FindAgent />} />
+        <Route path="/settings" element={<Settings />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+           <Route index element={<AdminDashboard properties={properties} />} />
+           
+           <Route path="properties" element={<PropertyManagement properties={properties} setProperties={setProperties} />} />
+           
+           <Route path="post-property" element={<PostProperty onAddProperty={handleAddProperty} isAdmin={true} />} />
+
+           <Route path="people" element={<UserManagement users={users} setUsers={setUsers} />} />
+           
+           <Route path="leads" element={<AdminPeople />} />
+           <Route path="analytics" element={<AdminDashboard properties={properties} />} />
+           <Route path="settings" element={<Settings />} />
+        </Route>
+      </Routes>
     </Router>
   );
-}
+};
 
 export default App;

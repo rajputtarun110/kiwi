@@ -18,6 +18,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
     return `₹${(price / 100000).toFixed(2)} L`;
   };
 
+  const pricePerSqFt = property.area > 0 ? Math.round(property.price / property.area) : 0;
+
   return (
     <div className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
       <div className="relative h-64 overflow-hidden">
@@ -42,7 +44,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           <Heart size={18} />
         </button>
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-          <p className="text-white font-bold text-2xl">{formatPrice(property.price)}</p>
+          <p className="text-white font-bold text-2xl">
+              {formatPrice(property.price)}
+              {property.listingType === 'sale' && pricePerSqFt > 0 && (
+                  <span className="ml-2 text-sm font-normal text-gray-200">₹{pricePerSqFt.toLocaleString()}/sq.ft</span>
+              )}
+          </p>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Menu, X, UserCircle, Search } from 'lucide-react';
+import { Home, Menu, X, UserCircle, Search, ShieldCheck } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +28,10 @@ const Navbar: React.FC = () => {
             <Link to="/buy" className="text-gray-600 hover:text-brand-green font-medium">Buy</Link>
             <Link to="/rent" className="text-gray-600 hover:text-brand-green font-medium">Rent</Link>
             <Link to="/sell" className="text-gray-600 hover:text-brand-green font-medium">Sell</Link>
-            <Link to="#" className="text-gray-600 hover:text-brand-green font-medium">Commercial</Link>
+            <Link to="/find-agent" className="text-gray-600 hover:text-brand-green font-medium">Find An Agent</Link>
+            <Link to="/admin" className="text-gray-600 hover:text-brand-green font-medium flex items-center gap-1">
+                <ShieldCheck size={16} /> Admin
+            </Link>
           </div>
 
           {/* Right Action Buttons */}
@@ -39,13 +43,9 @@ const Navbar: React.FC = () => {
                 </div>
              </Link>
              
-             <button className="hidden sm:flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors">
-                <Search size={18} />
-             </button>
-
-             <button className="hidden sm:flex items-center justify-center w-9 h-9 rounded-full bg-brand-green text-white shadow-lg shadow-brand-green/30 hover:scale-105 transition-transform">
+             <Link to="/settings" className="hidden sm:flex items-center justify-center w-9 h-9 rounded-full bg-brand-green text-white shadow-lg shadow-brand-green/30 hover:scale-105 transition-transform">
                 <UserCircle size={20} />
-             </button>
+             </Link>
 
              {/* Mobile Menu Button */}
              <button
@@ -62,9 +62,48 @@ const Navbar: React.FC = () => {
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 absolute w-full shadow-lg">
           <div className="pt-2 pb-3 space-y-1 px-4">
-            <Link to="/buy" className="block px-3 py-3 rounded-lg hover:bg-gray-50 text-base font-medium text-gray-700">Buy</Link>
-            <Link to="/rent" className="block px-3 py-3 rounded-lg hover:bg-gray-50 text-base font-medium text-gray-700">Rent</Link>
-            <Link to="/sell" className="block px-3 py-3 rounded-lg hover:bg-gray-50 text-base font-medium text-gray-700">Sell</Link>
+            <Link 
+              to="/buy" 
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-3 rounded-lg hover:bg-gray-50 text-base font-medium text-gray-700"
+            >
+              Buy
+            </Link>
+            <Link 
+              to="/rent" 
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-3 rounded-lg hover:bg-gray-50 text-base font-medium text-gray-700"
+            >
+              Rent
+            </Link>
+            <Link 
+              to="/sell" 
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-3 rounded-lg hover:bg-gray-50 text-base font-medium text-gray-700"
+            >
+              Sell
+            </Link>
+            <Link 
+              to="/find-agent" 
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-3 rounded-lg hover:bg-gray-50 text-base font-medium text-gray-700"
+            >
+              Find An Agent
+            </Link>
+            <Link 
+              to="/admin" 
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-3 rounded-lg hover:bg-gray-50 text-base font-medium text-gray-700 flex items-center gap-2"
+            >
+              <ShieldCheck size={18} /> Admin Panel
+            </Link>
+            <Link 
+              to="/settings" 
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-3 rounded-lg hover:bg-gray-50 text-base font-medium text-gray-700"
+            >
+              Settings & Profile
+            </Link>
           </div>
         </div>
       )}
