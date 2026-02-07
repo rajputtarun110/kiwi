@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { User, UserRole } from '../../types';
 import { Search, Plus, Shield, User as UserIcon, Building2, Trash2, Edit2, X, Check, Filter } from 'lucide-react';
 
+const API_URL = 'http://localhost:3001/api';
+
 interface UserManagementProps {
   users: User[];
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
@@ -22,7 +24,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers }) => {
     licenseNumber: ''
   });
 
-  const handleAddBroker = (e: React.FormEvent) => {
+  const handleAddBroker = async (e: React.FormEvent) => {
     e.preventDefault();
     const broker: User = {
       id: `u-${Date.now()}`,
@@ -38,19 +40,46 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers }) => {
       licenseNumber: newBroker.licenseNumber
     };
     
-    setUsers([broker, ...users]);
-    setIsModalOpen(false);
-    setNewBroker({ name: '', email: '', phone: '', companyName: '', licenseNumber: '' });
-    alert('Broker profile created successfully!');
+    try {
+        const res = await fetch(`${API_URL}/users`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(broker)
+        });
+        
+        if (res.ok) {
+            setUsers([broker, ...users]);
+            setIsModalOpen(false);
+            setNewBroker({ name: '', email: '', phone: '', companyName: '', licenseNumber: '' });
+            alert('Broker profile created successfully!');
+        }
+    } catch (err) {
+        alert("Failed to create broker");
+    }
   };
 
-  const toggleUserStatus = (id: string) => {
-    setUsers(users.map(u => {
-        if (u.id === id) {
-            return { ...u, status: u.status === 'Active' ? 'Suspended' : 'Active' };
-        }
-        return u;
-    }));
+  const toggleUserStatus = async (id: string) => {
+    const user = users.find(u => u.id === id);
+    if (!user) return;
+    
+    const newStatus = user.status === 'Active' ? 'Suspended' : 'Active';
+    
+    try {
+        await fetch(`${API_URL}/users/${id}/status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus })
+        });
+        
+        setUsers(users.map(u => {
+            if (u.id === id) {
+                return { ...u, status: newStatus };
+            }
+            return u;
+        }));
+    } catch (err) {
+        alert("Failed to update status");
+    }
   };
 
   const filteredUsers = users.filter(user => {
@@ -230,3 +259,4 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers }) => {
 };
 
 export default UserManagement;
+    

@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Lead } from '../../types';
 import { Phone, Mail } from 'lucide-react';
+
+const API_URL = 'http://localhost:3001/api';
 
 const LeadCard: React.FC<{ lead: Lead }> = ({ lead }) => (
     <div className="bg-white p-4 rounded-lg border border-gray-100 hover:shadow-md transition-shadow">
@@ -30,13 +33,30 @@ const LeadCard: React.FC<{ lead: Lead }> = ({ lead }) => (
 );
 
 const AdminPeople: React.FC = () => {
-  // MOCK DATA
-  const [leads] = useState<Lead[]>([
-    { id: '1', name: 'Rahul Sharma', phone: '+91 9876543210', email: 'rahul@test.com', interest: 'Buy', source: 'Website', status: 'New', date: '2023-10-24' },
-    { id: '2', name: 'Priya Singh', phone: '+91 9876543211', email: 'priya@test.com', interest: 'Rent', source: 'Instagram', status: 'Contacted', date: '2023-10-23' },
-    { id: '3', name: 'Amit Verma', phone: '+91 9876543212', email: 'amit@test.com', interest: 'Sell', source: 'Referral', status: 'Closed', date: '2023-10-20' },
-    { id: '4', name: 'Sneha Gupta', phone: '+91 9876543213', email: 'sneha@test.com', interest: 'Buy', source: 'Ads', status: 'Follow-up', date: '2023-10-25' },
-  ]);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_URL}/leads`)
+        .then(res => res.json())
+        .then(data => {
+            if (Array.isArray(data) && data.length > 0) {
+                setLeads(data);
+            } else {
+                // Fallback mock if empty
+                setLeads([
+                    { id: '1', name: 'Rahul Sharma', phone: '+91 9876543210', email: 'rahul@test.com', interest: 'Buy', source: 'Website', status: 'New', date: '2023-10-24' },
+                    { id: '2', name: 'Priya Singh', phone: '+91 9876543211', email: 'priya@test.com', interest: 'Rent', source: 'Instagram', status: 'Contacted', date: '2023-10-23' },
+                    { id: '3', name: 'Amit Verma', phone: '+91 9876543212', email: 'amit@test.com', interest: 'Sell', source: 'Referral', status: 'Closed', date: '2023-10-20' },
+                    { id: '4', name: 'Sneha Gupta', phone: '+91 9876543213', email: 'sneha@test.com', interest: 'Buy', source: 'Ads', status: 'Follow-up', date: '2023-10-25' },
+                ]);
+            }
+            setLoading(false);
+        })
+        .catch(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div className="p-6">Loading leads...</div>;
 
   return (
     <div className="space-y-6">
@@ -47,7 +67,7 @@ const AdminPeople: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Column 1: New */}
             <div className="bg-gray-50 p-4 rounded-xl">
-                <h3 className="font-bold text-gray-700 mb-4 flex justify-between">New Leads <span className="bg-white px-2 rounded-full text-xs py-0.5 border">2</span></h3>
+                <h3 className="font-bold text-gray-700 mb-4 flex justify-between">New Leads <span className="bg-white px-2 rounded-full text-xs py-0.5 border">{leads.filter(l => l.status === 'New').length}</span></h3>
                 <div className="space-y-3">
                     {leads.filter(l => l.status === 'New').map(lead => <LeadCard key={lead.id} lead={lead} />)}
                     <div className="p-3 bg-white border border-dashed border-gray-300 rounded text-center text-xs text-gray-400 cursor-pointer hover:border-brand-green hover:text-brand-green">+ Add Manual Lead</div>
@@ -55,14 +75,14 @@ const AdminPeople: React.FC = () => {
             </div>
                 {/* Column 2: Contacted */}
                 <div className="bg-gray-50 p-4 rounded-xl">
-                <h3 className="font-bold text-gray-700 mb-4 flex justify-between">In Progress <span className="bg-white px-2 rounded-full text-xs py-0.5 border">1</span></h3>
+                <h3 className="font-bold text-gray-700 mb-4 flex justify-between">In Progress <span className="bg-white px-2 rounded-full text-xs py-0.5 border">{leads.filter(l => l.status === 'Contacted' || l.status === 'Follow-up').length}</span></h3>
                 <div className="space-y-3">
                     {leads.filter(l => l.status === 'Contacted' || l.status === 'Follow-up').map(lead => <LeadCard key={lead.id} lead={lead} />)}
                 </div>
             </div>
                 {/* Column 3: Closed */}
                 <div className="bg-gray-50 p-4 rounded-xl opacity-80">
-                <h3 className="font-bold text-gray-700 mb-4 flex justify-between">Closed <span className="bg-white px-2 rounded-full text-xs py-0.5 border">1</span></h3>
+                <h3 className="font-bold text-gray-700 mb-4 flex justify-between">Closed <span className="bg-white px-2 rounded-full text-xs py-0.5 border">{leads.filter(l => l.status === 'Closed').length}</span></h3>
                 <div className="space-y-3">
                     {leads.filter(l => l.status === 'Closed').map(lead => <LeadCard key={lead.id} lead={lead} />)}
                 </div>
@@ -73,3 +93,4 @@ const AdminPeople: React.FC = () => {
 };
 
 export default AdminPeople;
+    

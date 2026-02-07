@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Property } from '../../types';
 import { TrendingUp, Users, CheckCircle, AlertCircle, DollarSign, FileText } from 'lucide-react';
@@ -10,7 +11,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ properties }) => {
   // Calculated Stats
   const totalProperties = properties.length;
   const verifiedProperties = properties.filter(p => p.isVerified).length;
-  const pendingReview = properties.filter(p => p.status === 'Pending' || p.status === 'Under Review').length;
+  // Fixed type error: removed check for 'Under Review' as it is not in PropertyStatus type
+  const pendingReview = properties.filter(p => p.status === 'Pending').length;
   
   const mockLeadsCount = 128;
   const mockRevenue = "₹ 12.5 L";

@@ -1,8 +1,10 @@
 
 import React, { useState } from 'react';
 import { Property, PropertyStatus } from '../../types';
-import { Check, X, Eye, Trash2, ShieldCheck, FileText, PlusCircle, AlertTriangle } from 'lucide-react';
+import { Check, X, Eye, Trash2, ShieldCheck, FileText, PlusCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+
+const API_URL = 'http://localhost:3001/api';
 
 interface PropertyManagementProps {
   properties: Property[];
@@ -14,19 +16,36 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({ properties, set
   const [filter, setFilter] = useState<'All' | 'Pending' | 'Approved' | 'Rejected' | 'Sold'>('All');
   const [selectedProp, setSelectedProp] = useState<Property | null>(null);
 
-  const handleStatusChange = (id: string, newStatus: PropertyStatus, isVerified: boolean) => {
-    setProperties(prev => prev.map(p => 
-        p.id === id ? { ...p, status: newStatus, isVerified: isVerified } : p
-    ));
-    if (selectedProp?.id === id) {
-        setSelectedProp(prev => prev ? { ...prev, status: newStatus, isVerified: isVerified } : null);
+  const handleStatusChange = async (id: string, newStatus: PropertyStatus, isVerified: boolean) => {
+    try {
+        await fetch(`${API_URL}/properties/${id}/status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus, isVerified })
+        });
+        
+        setProperties(prev => prev.map(p => 
+            p.id === id ? { ...p, status: newStatus, isVerified: isVerified } : p
+        ));
+        
+        if (selectedProp?.id === id) {
+            setSelectedProp(prev => prev ? { ...prev, status: newStatus, isVerified: isVerified } : null);
+        }
+    } catch (err) {
+        console.error("Failed to update status", err);
+        alert("Failed to update status");
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this listing? This action cannot be undone.")) {
-      setProperties(prev => prev.filter(p => p.id !== id));
-      if (selectedProp?.id === id) setSelectedProp(null);
+      try {
+        await fetch(`${API_URL}/properties/${id}`, { method: 'DELETE' });
+        setProperties(prev => prev.filter(p => p.id !== id));
+        if (selectedProp?.id === id) setSelectedProp(null);
+      } catch (err) {
+        console.error("Failed to delete", err);
+      }
     }
   };
 
@@ -205,3 +224,4 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({ properties, set
 };
 
 export default PropertyManagement;
+    
